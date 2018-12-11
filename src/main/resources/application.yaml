@@ -1,0 +1,31 @@
+spring:
+  application:
+    name: msp-dc2-dockops
+  datasource:
+    url: jdbc:postgresql://Milinds-MacBook-Pro.local:26257/trackerdb?sslmode=disable
+    database: trackerdb
+    username: root
+    password: 
+#    driverClassName: com.mysql.cj.jdbc.Driver
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    hibernate:
+       ddl-auto: update
+    properties:
+      hibernate:
+        show_sql: true
+        use_sql_comments: false
+        format_sql: true
+server:
+  port: 8090
+logging:
+  level:
+    root: INFO
+    org.springframework: WARN
+    path: /Users/milind/logs/tracker/log
+  file:
+    main:
+      rollingPolicy:
+        maxIndex: 10
+      triggeringPolicy:
+          maxFileSize: 75MB

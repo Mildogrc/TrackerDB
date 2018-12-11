@@ -1,0 +1,47 @@
+	Application: E-book Issuance
+	Nouns(Attributes)
+	NO PLURAL, since it applies to each instance.
+	1. Student
+	2. Book
+	3. Issuance
+	4. RedemptionCodes
+	5. WeeklyReport
+	6. ...
+	
+	:Each noun is a service
+	/tracker/students/
+		PUT 	new student
+		POST 	updates to student
+		GET 	a student/students
+		DELTE   a student
+	Attributes (of each noun):
+	
+	1. Student
+		* ID
+		* Name /related to Line 30
+		* Age
+		* Class
+		* Record Of Returns
+	2. Books
+		* ID
+		* AuthorID
+		* ISBN
+	3. Author
+		* ID  /related to Line 20
+		* Name
+	4. Redemption Codes
+		* BookID
+		* ISBN
+		* BarCodes
+	5. Weekly Reports
+		* Names of Students
+		* Names of Books 
+		
+		
+		
+	^^ Notes:
+	Insert Into Student (first_name, last_name, middle_name, enabled, version, academic_year, age) values(“Milind”, “Chandramohan”, “”, 1, 1, 2020, 16)
+	
+	
+	
+	

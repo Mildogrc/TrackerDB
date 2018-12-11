@@ -1,0 +1,38 @@
+Relational:
+
+
+Student: (primarykey -id)
+--------------------------------
+id name    age  school    grade
+--------------------------------
+1  Milind   16   Lambert  11th
+2  Tanya     7   JCE       2nd
+
+
+Author (primary key - id)
+------------------------------------
+id name         
+------------------------------------
+1  Shakespeare   
+2  Dr. Seuss
+3  Mr. Xavier
+
+
+
+Book: (primarykey - id) (authorid - fk in author table, refers id)
+------------------------------------
+id name         authorid         isbn
+------------------------------------
+1  Hamelet      1               123213
+2  Green Eggs   2               988767
+3  Mr.X's notes 3                null
+
+
+Issuace  (bookid - fk in book table, refers id)
+         (studentid - fk in studen table, refers id)
+------------------------------------------
+id bookid  studentid   borrowed   returned
+------------------------------------------
+1  1       1           11/01/18   11/11/18
+2  2       2           11/01/18   11/11/18
+9  1       2           11/01/28   11/12/28
