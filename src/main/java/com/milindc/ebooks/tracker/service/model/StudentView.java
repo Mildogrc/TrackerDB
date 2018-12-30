@@ -30,4 +30,5 @@ public class StudentView {
 		this.id = id;
 		this.fullName = getFullName();
 	}
+	
 }

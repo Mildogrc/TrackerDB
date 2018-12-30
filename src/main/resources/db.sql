@@ -1,5 +1,8 @@
+drop table book;
+drop table student;
+
 create table student (
-       id  bigserial not null,
+        id serial not null,
         create_date date,
         create_user varchar(255),
         enabled int4 not null,
@@ -18,6 +21,7 @@ create table student (
         primary key (id)
     )
    
+
 create table book (
        id  bigserial not null,
         create_date date,
