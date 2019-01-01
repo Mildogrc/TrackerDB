@@ -11,8 +11,8 @@ spring:
     locations: classpath:db/migration
   jpa:
     database-platform: org.hibernate.dialect.PostgreSQLDialect
-    hibernate:
-       ddl-auto: update
+#    hibernate:
+#       ddl-auto: validate
     properties:
       hibernate:
         show_sql: true
