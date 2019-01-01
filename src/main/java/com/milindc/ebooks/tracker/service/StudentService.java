@@ -19,6 +19,7 @@ import javax.ws.rs.core.UriBuilder;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.milindc.ebooks.tracker.db.StudentRepository;
 import com.milindc.ebooks.tracker.db.model.Student;
@@ -43,6 +44,20 @@ public class StudentService {
 				.collect(Collectors.toList()));
 		return students;
 	}
+	
+	@GET
+	public Students searchStudents(@RequestParam("lastName") String lastName,
+									@RequestParam("lastName") String firstName,
+									@RequestParam("lastName") String phone) {
+		
+		
+		
+		Students students = new Students();
+		// find the right way using https://www.baeldung.com/spring-data-criteria-queries
+		//	students.setStudents(itr.stream().map(s -> studentAssembler.to(s)).collect(Collectors.toList()));
+		return students;
+	}
+
 
 	@GET
 	@Path("/lastName/{lastName}")
