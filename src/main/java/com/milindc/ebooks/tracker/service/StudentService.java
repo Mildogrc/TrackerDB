@@ -1,9 +1,12 @@
 package com.milindc.ebooks.tracker.service;
 
+import static com.milindc.ebooks.tracker.db.StudentRepository.*;
+import static org.springframework.data.jpa.domain.Specification.where;
+
 import java.net.URI;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.websocket.server.PathParam;
@@ -12,14 +15,15 @@ import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriBuilder;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Component;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import com.milindc.ebooks.tracker.db.StudentRepository;
 import com.milindc.ebooks.tracker.db.model.Student;
@@ -34,30 +38,48 @@ public class StudentService {
 	private StudentRepository studentRepository;
 	StudentAssembler studentAssembler = new StudentAssembler();
 
+//	@GET
+//	@Produces(MediaType.APPLICATION_JSON)
+//	public Students getStudents() {
+//		Students students = new Students();
+//		Iterable<Student> itr = studentRepository.findAll();
+//		students.setStudents(StreamSupport.stream(itr.spliterator(), false).map(s -> studentAssembler.to(s))
+//				.collect(Collectors.toList()));
+//		return students;
+//	}
+
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
-	public Students getStudents() {
+	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+	public Students searchStudents(@QueryParam("lastName") String lastName,
+									@QueryParam("firstName") String firstName,
+									@QueryParam("phone") String phone) {
+		
+		
+		
+		List<Specification<Student>> predicates = new ArrayList<>();
+	     
+	    if (firstName != null) {
+	        predicates.add(hasFirstName(firstName));
+	        System.out.println("firstName");
+	    }
+	    if (lastName != null) {
+	        predicates.add(hasFirstName(lastName));
+	        System.out.println("lastName");
+	    }
+	    if (phone != null) {
+	        predicates.add(hasFirstName(phone));
+	        System.out.println("Phone");
+	    }
+	 
+		
 		Students students = new Students();
-		Iterable<Student> itr = studentRepository.findAll();
-
-		students.setStudents(StreamSupport.stream(itr.spliterator(), false).map(s -> studentAssembler.to(s))
-				.collect(Collectors.toList()));
+		List<Student> itr = studentRepository.findAll(where(singleSpec(predicates)));
+		itr.stream().forEach(s -> System.out.println(s.getFirstName()));
+		students.setStudents(itr.stream().map(s -> studentAssembler.to(s)).collect(Collectors.toList()));
+		System.out.println(students);
 		return students;
 	}
-	
-	@GET
-	public Students searchStudents(@RequestParam("lastName") String lastName,
-									@RequestParam("lastName") String firstName,
-									@RequestParam("lastName") String phone) {
-		
-		
-		
-		Students students = new Students();
-		// find the right way using https://www.baeldung.com/spring-data-criteria-queries
-		//	students.setStudents(itr.stream().map(s -> studentAssembler.to(s)).collect(Collectors.toList()));
-		return students;
-	}
-
 
 	@GET
 	@Path("/lastName/{lastName}")
@@ -66,6 +88,7 @@ public class StudentService {
 		List<Student> itr = studentRepository.findByLastName(lastName);
 
 		students.setStudents(itr.stream().map(s -> studentAssembler.to(s)).collect(Collectors.toList()));
+		System.out.println("Using Path Parameter Funtion for lastName");
 		return students;
 	}
 
@@ -76,6 +99,7 @@ public class StudentService {
 		List<Student> itr = studentRepository.findByFirstName(firstName);
 
 		students.setStudents(itr.stream().map(s -> studentAssembler.to(s)).collect(Collectors.toList()));
+		System.out.println("Using Path Parameter Funtion for fisrtName");
 		return students;
 	}
 
@@ -86,6 +110,7 @@ public class StudentService {
 		List<Student> itr = studentRepository.findByPhone(phone);
 
 		students.setStudents(itr.stream().map(s -> studentAssembler.to(s)).collect(Collectors.toList()));
+		System.out.println("Using Path Parameter Funtion for phone");
 		return students;
 	}
 
