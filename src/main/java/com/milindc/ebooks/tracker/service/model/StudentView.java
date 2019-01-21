@@ -14,6 +14,10 @@ public class StudentView {
 	
 	private String middleName;
 	
+	private String phone1;
+	
+	private String phone2;
+	
 	private Long id; 
 	
 	@Getter(AccessLevel.NONE)

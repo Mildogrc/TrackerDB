@@ -9,6 +9,7 @@ spring:
 #    driverClassName: com.mysql.cj.jdbc.Driver
   flyway:
     locations: classpath:db/migration
+    baselineOnMigrate: true
   jpa:
     database-platform: org.hibernate.dialect.PostgreSQLDialect
 #    hibernate:

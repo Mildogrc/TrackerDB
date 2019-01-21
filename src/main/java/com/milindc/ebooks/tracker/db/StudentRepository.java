@@ -34,14 +34,18 @@ public interface StudentRepository extends JpaRepository<Student, Long>, JpaSpec
 	}
 
 	static Specification<Student> hasPhone(String phone) {
-		return (student, cq, cb) -> cb.equal(student.get("phone1"), phone);
+		return (student, cq, cb) -> cb.or(cb.equal(student.get("phone1"), phone), cb.equal(student.get("phone2"), phone));
 	}
 
 	static Specification<Student> singleSpec(List<Specification<Student>> listOfSpecs){
+		if(listOfSpecs.size() == 0) {
+			return null;
+		}
 		Specification<Student> combinedSpec = listOfSpecs.get(0);
 		for(int i = 1; i < listOfSpecs.size(); i++) {
 			combinedSpec = combinedSpec.and(listOfSpecs.get(i));
 		}
+		
 		return combinedSpec;
 	}
 }
