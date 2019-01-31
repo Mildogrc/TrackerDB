@@ -8,7 +8,8 @@ spring:
     password: 
 #    driverClassName: com.mysql.cj.jdbc.Driver
   flyway:
-    locations: classpath:db/postgres
+    locations: classpath:db/migration
+    baselineOnMigrate: true
   jpa:
     database-platform: org.hibernate.dialect.PostgreSQLDialect
 #    hibernate:
@@ -24,7 +25,7 @@ logging:
   level:
     root: INFO
     org.springframework: WARN
-    path: /Users/milind/logs/tracker/log
+    path: ${LOG_PATH}
   file:
     main:
       rollingPolicy:

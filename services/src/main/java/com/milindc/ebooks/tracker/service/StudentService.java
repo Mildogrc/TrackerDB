@@ -1,12 +1,16 @@
 package com.milindc.ebooks.tracker.service;
 
-import static com.milindc.ebooks.tracker.db.StudentRepository.*;
+import static com.milindc.ebooks.tracker.db.StudentRepository.hasFirstName;
+import static com.milindc.ebooks.tracker.db.StudentRepository.hasLastName;
+import static com.milindc.ebooks.tracker.db.StudentRepository.hasPhone;
+import static com.milindc.ebooks.tracker.db.StudentRepository.singleSpec;
 import static org.springframework.data.jpa.domain.Specification.where;
 
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.websocket.server.PathParam;
@@ -38,15 +42,15 @@ public class StudentService {
 	private StudentRepository studentRepository;
 	StudentAssembler studentAssembler = new StudentAssembler();
 
-//	@GET
-//	@Produces(MediaType.APPLICATION_JSON)
-//	public Students getStudents() {
-//		Students students = new Students();
-//		Iterable<Student> itr = studentRepository.findAll();
-//		students.setStudents(StreamSupport.stream(itr.spliterator(), false).map(s -> studentAssembler.to(s))
-//				.collect(Collectors.toList()));
-//		return students;
-//	}
+	@GET
+	@Produces(MediaType.APPLICATION_JSON)
+	public Students getStudents() {
+		Students students = new Students();
+		Iterable<Student> itr = studentRepository.findAll();
+		students.setStudents(
+				StreamSupport.stream(itr.spliterator(), false).map(b -> studentAssembler.to(b)).collect(Collectors.toList()));
+		return students;
+	}
 
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
@@ -56,20 +60,16 @@ public class StudentService {
 									@QueryParam("phone") String phone) {
 		
 		
-		
 		List<Specification<Student>> predicates = new ArrayList<>();
-	     
+		
+	    if (lastName != null) {
+	        predicates.add(hasLastName(lastName));
+	    }
 	    if (firstName != null) {
 	        predicates.add(hasFirstName(firstName));
-	        System.out.println("firstName");
-	    }
-	    if (lastName != null) {
-	        predicates.add(hasFirstName(lastName));
-	        System.out.println("lastName");
 	    }
 	    if (phone != null) {
-	        predicates.add(hasFirstName(phone));
-	        System.out.println("Phone");
+	        predicates.add(hasPhone(phone));
 	    }
 	 
 		
@@ -86,8 +86,8 @@ public class StudentService {
 	public Students getStudentsByLastName(@PathParam("lastName") String lastName) {
 		Students students = new Students();
 		List<Student> itr = studentRepository.findByLastName(lastName);
-
-		students.setStudents(itr.stream().map(s -> studentAssembler.to(s)).collect(Collectors.toList()));
+		students.setStudents(
+				StreamSupport.stream(itr.spliterator(), false).map(s -> studentAssembler.to(s)).collect(Collectors.toList()));
 		System.out.println("Using Path Parameter Funtion for lastName");
 		return students;
 	}
@@ -98,8 +98,8 @@ public class StudentService {
 		Students students = new Students();
 		List<Student> itr = studentRepository.findByFirstName(firstName);
 
-		students.setStudents(itr.stream().map(s -> studentAssembler.to(s)).collect(Collectors.toList()));
-		System.out.println("Using Path Parameter Funtion for fisrtName");
+		students.setStudents(
+				StreamSupport.stream(itr.spliterator(), false).map(s -> studentAssembler.to(s)).collect(Collectors.toList()));System.out.println("Using Path Parameter Funtion for fisrtName");
 		return students;
 	}
 
@@ -109,8 +109,8 @@ public class StudentService {
 		Students students = new Students();
 		List<Student> itr = studentRepository.findByPhone(phone);
 
-		students.setStudents(itr.stream().map(s -> studentAssembler.to(s)).collect(Collectors.toList()));
-		System.out.println("Using Path Parameter Funtion for phone");
+		students.setStudents(
+				StreamSupport.stream(itr.spliterator(), false).map(s -> studentAssembler.to(s)).collect(Collectors.toList()));System.out.println("Using Path Parameter Funtion for phone");
 		return students;
 	}
 
@@ -124,7 +124,7 @@ public class StudentService {
 		URI uri = UriBuilder.fromUri(request.getRequestURL().toString()).path(String.valueOf(savedStudent.getId()))
 				.build();
 		return Response.created(uri).entity(savedStudent).build();
-	}
+	} 
 
 //	@PUT
 //	@Consumes("application/json")
