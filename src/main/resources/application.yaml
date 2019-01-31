@@ -2,13 +2,13 @@ spring:
   application:
     name: msp-dc2-dockops
   datasource:
-    url: jdbc:postgresql://Milinds-MacBook-Pro.local:26257/trackerdb?sslmode=disable
-    database: trackerdb
-    username: root
+    url: jdbc:postgresql://localhost:5432/postgres?sslmode=disable
+    database: postgres
+    username: postgres
     password: 
 #    driverClassName: com.mysql.cj.jdbc.Driver
   flyway:
-    locations: classpath:db/migration
+    locations: classpath:db/postgres
   jpa:
     database-platform: org.hibernate.dialect.PostgreSQLDialect
 #    hibernate:
