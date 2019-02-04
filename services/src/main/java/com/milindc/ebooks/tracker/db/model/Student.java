@@ -24,6 +24,8 @@ public class Student extends Person {
 	private static final long serialVersionUID = 1L;
 	// name
 	// personal contact info
+	private String studentId;
+	
 	private String phone1;
 
 	private String phone2;
@@ -37,12 +39,13 @@ public class Student extends Person {
 	
 
 	public Student(String firstName, String lastName, String middleName, String email, String gender, String phone1, String phone2,
-			Integer age, Integer academicYear, List<BookCopy> borrowedBooks) {
+			Integer age, Integer academicYear, List<BookCopy> borrowedBooks, String studentID) {
 		super(firstName, lastName, middleName, email, gender);
 		this.phone1 = phone1;
 		this.phone2 = phone2;
 		this.age = age;
 		this.academicYear = academicYear;
 		this.borrowedBooks = borrowedBooks;
+		studentId = studentID;
 	}
 }
