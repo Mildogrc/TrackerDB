@@ -17,7 +17,7 @@ public interface BookRepository extends CrudRepository<Book, Long>{
 	List<Book> findByTitle(String title);
 	
 	@Query("SELECT b FROM Book b where b.isbn = :isbn")
-	List<Book> findByIsbn(String isbn);
+	Book findByIsbn(String isbn);
 	
 	@Query("SELECT b FROM Book b where b.author = :author")
 	List<Book> findByAuthor(String author);

@@ -13,6 +13,9 @@ import com.milindc.ebooks.tracker.db.model.Student;
 @Repository
 public interface StudentRepository extends JpaRepository<Student, Long>, JpaSpecificationExecutor<Student> {
 
+	@Query("SELECT s FROM Student s where s.studentId = :studentId")
+	Student findByStudentId(String studentId);
+
 	@Query("SELECT s FROM Student s where s.lastName = :lname")
 	List<Student> findByLastName(String lname);
 
@@ -48,4 +51,5 @@ public interface StudentRepository extends JpaRepository<Student, Long>, JpaSpec
 		
 		return combinedSpec;
 	}
+
 }

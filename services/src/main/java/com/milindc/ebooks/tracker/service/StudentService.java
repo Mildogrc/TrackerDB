@@ -8,6 +8,7 @@ import static org.springframework.data.jpa.domain.Specification.where;
 
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
@@ -101,6 +102,14 @@ public class StudentService {
 				.collect(Collectors.toList()));
 		System.out.println("Using Path Parameter Funtion for fisrtName");
 		return students;
+	}
+
+	@GET
+	@Path("/{studentId}")
+	public Student getStudentByStudentId(@PathParam("studentId") String studentId) {
+		Student student = studentRepository.findByStudentId(studentId);
+		System.out.println("Using Path Parameter Funtion for fisrtName");
+		return student;
 	}
 
 	@GET

@@ -7,6 +7,7 @@ import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
@@ -24,12 +25,10 @@ import lombok.NoArgsConstructor;
 public class Book extends AuditedEntity {
 	private static final long serialVersionUID = 1L;
 
-	private Integer authorID;
-	
-	private String title;
-	
 	@Column(unique = true)
-	private Long isbn;
+	private String isbn;
+
+	private String title;
 	
 	private String author;
 	
@@ -42,6 +41,6 @@ public class Book extends AuditedEntity {
 	private String genre;
 	
 	@OneToMany(mappedBy = "book", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-	private List<BookCopy> copies = new ArrayList<>(); 
+	private List<Checkout> copies = new ArrayList<>(); 
 	
 }

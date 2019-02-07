@@ -13,7 +13,7 @@ public class BookView {
 	
 	private String title;
 	
-	private Long isbn;
+	private String isbn;
 	
 	private String author;
 	

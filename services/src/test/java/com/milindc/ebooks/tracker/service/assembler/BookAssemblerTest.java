@@ -11,9 +11,8 @@ public class BookAssemblerTest {
 
 	@Test
 	public void test() {
-		Book b = new Book(null, "g", 23812903L,"m", 2002,null,null,null,null);
-	//	Book b = new Book(authorID, title, isbn, author, publicationYear, editor, publisher, genre, copies)
-		BookView bV = new BookView(null, "g", 23812903L,null,null,null,null,null);
+		Book b = new Book("23812903","title", "author", 2002, "editor", "publisher" ,"genre",null);
+		BookView bV = new BookView(null, "title", "23812903","author", 2002, "editor", "publisher", "genre");
 		
 		BookAssembler a = new BookAssembler();
 		assertEquals(b.getIsbn(), a.to(bV).getIsbn());
