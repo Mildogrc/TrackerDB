@@ -1,12 +1,14 @@
 package com.milindc.ebooks.tracker.service.model;
 
 import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
+@AllArgsConstructor
 public class StudentView {
 	
 	private Long id; 

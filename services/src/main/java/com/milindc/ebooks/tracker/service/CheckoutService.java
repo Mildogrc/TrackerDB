@@ -33,7 +33,7 @@ public class CheckoutService {
 	}
 
 	public List<Checkout> getCheckoutByIsbn(String isbn) {
-		Book book = bookService.getBookByIsbn(isbn);
+		Book book = bookService.findBookByIsbn(isbn);
 		List<Checkout> checkouts = checkoutRepository.findByBookId(book.getId());
 		log.debug("Find by isbn works");
 		return checkouts;
@@ -52,7 +52,7 @@ public class CheckoutService {
 	}
 	
 	public Checkout createCheckout(Checkout checkout) {
-		checkout.setBook(bookService.getBookByIsbn(checkout.getBook().getIsbn()));
+		checkout.setBook(bookService.findBookByIsbn(checkout.getBook().getIsbn()));
 		checkout.setStudent(studentService.getStudentByStudentId(checkout.getStudent().getStudentId()));
 		checkout = checkoutRepository.save(checkout);
 		log.debug(String.format("Retrieved checkout %s", checkout));

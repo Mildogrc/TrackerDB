@@ -8,13 +8,17 @@ import java.net.URL;
 import org.apache.commons.io.FileUtils;
 import org.junit.Test;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectWriter;
 import com.milindc.ebooks.tracker.db.model.Book;
+import com.milindc.ebooks.tracker.service.assembler.BookAssembler;
+import com.milindc.ebooks.tracker.service.model.BookView;
 
 public class BookServiceTest {
 
 	BookService bs = new BookService();
 	
-	@Test
+//	@Test
 	public void testgetRemote() {
 		System.out.println(bs.lookupRemote("038549081X"));
 	}
@@ -26,7 +30,11 @@ public class BookServiceTest {
 		File f = new File(fs.toURI());
 		String s = FileUtils.readFileToString(f, "UTF-8");
 		Book b = bs.parseBook(s);
-		System.out.println(b);
+		BookAssembler ba = new BookAssembler();
+		BookView bv = ba.to(b);
+		ObjectWriter ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
+		String json = ow.writeValueAsString(bv);
+		System.out.println(json);
 	}
 	
 }

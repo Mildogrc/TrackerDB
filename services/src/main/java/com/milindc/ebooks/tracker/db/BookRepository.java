@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
@@ -12,7 +13,7 @@ import com.milindc.ebooks.tracker.db.model.Book;
 import com.milindc.ebooks.tracker.db.model.Student;
 
 @Repository
-public interface BookRepository extends CrudRepository<Book, Long>{
+public interface BookRepository extends CrudRepository<Book, Long>, JpaSpecificationExecutor<Book>{
 	@Query("SELECT b FROM Book b where b.title = :title")
 	List<Book> findByTitle(String title);
 	

@@ -10,6 +10,7 @@ import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
@@ -32,24 +33,31 @@ import lombok.extern.slf4j.Slf4j;
 @Path("/books")
 @Slf4j
 public class BooksResource {
-	@Autowired
+	@Autowired(required=true)
 	private BookService bookService;
+	
 	BookAssembler bookAssembler = new BookAssembler();
 	
+
 	@GET
-	@Produces(MediaType.APPLICATION_JSON)
-	public Response getBooks() {
-		Books books = new Books();
-		Iterable<Book> itr = bookService.getBooks();
-		books.setBooks(StreamSupport.stream(itr.spliterator(), false).map(b -> bookAssembler.to(b)).collect(Collectors.toList()));
-		log.debug("Find All books works");
-		return Response.ok(books).build();
+	@Path("/${isbn}")
+	public Response getBookById(@PathParam("isbn") String isbn) {
+		System.out.println(bookService);
+		System.out.println("Looking up by " + isbn);
+		Book book = bookService.findBookByIsbn(isbn);
+		System.err.println(book);
+		if(book != null) {
+			BookView bookView = bookAssembler.to(book);
+			return Response.ok(bookView).build();
+		} else {
+			return Response.noContent().build();
+		}
 	}
 
 
 
 	@GET
-	public Response getBookByAuthor(@QueryParam("author") String author, @QueryParam("isbn") String isbn, 
+	public Response searchBooks(@QueryParam("author") String author, @QueryParam("isbn") String isbn, 
 			@QueryParam("title") String title, @QueryParam("genre") String genre, 
 			@QueryParam("publicationYear") String publicationYear, @QueryParam("editor") String editor, 
 			@QueryParam("publisher") String publisher) {
