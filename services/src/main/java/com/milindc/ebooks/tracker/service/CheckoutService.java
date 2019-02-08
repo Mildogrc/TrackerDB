@@ -2,6 +2,7 @@ package com.milindc.ebooks.tracker.service;
 
 import java.net.URI;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
@@ -11,7 +12,9 @@ import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -46,13 +49,48 @@ public class CheckoutService {
 	private CheckoutAssembler checkoutAssembler;
 
 	@GET
+	@Path("${id}")
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response getCheckouts() {
+	public Response getCheckout(@PathParam("id") Long id) {
+		
+		Response response = null;
+		Optional<Checkout> checkouts = checkoutRepository.findById(id);
+		
+		if(checkouts.isPresent()) {
+			response = Response.ok(checkoutAssembler.to(checkouts.get())).build();
+		} else {
+			response = Response.noContent().build();
+		}
+		return response;
+	}
+
+	@GET
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response getCheckouts(@QueryParam("isbn") String isbn, @QueryParam("studentId") String studentId) {
+		
+		Response response = null;
 		Checkouts checkouts = new Checkouts();
-		Iterable<Checkout> itr = checkoutRepository.findAll();
-		checkouts.setCheckouts(StreamSupport.stream(itr.spliterator(), false).map(b -> checkoutAssembler.to(b)).collect(Collectors.toList()));
-		log.debug("Find All checkouts works");
-		return Response.ok(checkouts).build();
+		Book book = bookService.findByIsbn(isbn);
+		Iterable<Checkout> itr = null;
+		if(book != null) {
+			itr = checkoutRepository.findByBookId(book.getId());
+		} else {
+			Student student = studentService.getStudentByStudentId(studentId);
+			if(student != null) {
+				itr = checkoutRepository.findByStudentId(student.getId());
+			}
+		}
+		if(itr != null) {
+			checkouts.setCheckouts(StreamSupport.stream(itr.spliterator(), false).map(b -> checkoutAssembler.to(b)).collect(Collectors.toList()));
+			if (checkouts.getCheckouts().size() > 0) {
+				log.debug("Find All checkouts works");
+				response = Response.ok(checkouts).build();
+			}
+		}
+		if(response == null) {
+			response = Response.noContent().build();
+		}
+		return response;
 	}
 
 	public List<Checkout> getCheckoutByIsbn(String isbn) {

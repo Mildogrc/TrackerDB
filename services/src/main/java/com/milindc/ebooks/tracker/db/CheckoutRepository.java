@@ -19,5 +19,4 @@ public interface CheckoutRepository  extends JpaRepository<Checkout, Long>, JpaS
 	@Query("SELECT c FROM Checkout c where c.book.id = :bookId")
 	List<Checkout> findByBookId(Long bookId);
 
-
 }
