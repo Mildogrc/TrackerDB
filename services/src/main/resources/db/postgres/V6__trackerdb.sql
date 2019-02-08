@@ -1,2 +1,0 @@
-
-ALTER TABLE student ADD COLUMN student_id INTEGER;

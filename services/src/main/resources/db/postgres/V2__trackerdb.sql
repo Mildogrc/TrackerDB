@@ -1,5 +1,6 @@
 CREATE TABLE student (
 id SERIAL PRIMARY KEY,
+student_id VARCHAR(255),
 create_date DATE NULL,
 create_user VARCHAR(255) NULL,
 enabled INTEGER NOT NULL,
@@ -14,7 +15,8 @@ gender VARCHAR(255) NULL,
 last_name VARCHAR(255) NULL,
 middle_name VARCHAR(255) NULL,
 phone1 VARCHAR(255) NULL,
-phone2 VARCHAR(255) NULL
+phone2 VARCHAR(255) NULL,
+CONSTRAINT ndx_stdnt_id UNIQUE (student_id)
 );
 
 
@@ -30,7 +32,7 @@ author VARCHAR(255) NULL,
 authorid INTEGER NULL,
 editor VARCHAR(255) NULL,
 genre VARCHAR(255) NULL,
-isbn BIGINT NULL,
+isbn VARCHAR(255) NOT NULL,
 publication_year INTEGER NULL,
 publisher VARCHAR(255) NULL,
 title VARCHAR(255) NULL,
@@ -70,3 +72,15 @@ CONSTRAINT ndx_bkcp_rdmp UNIQUE (redemption_code)
 ); 
 
 
+CREATE TABLE checkout (
+id SERIAL NOT NULL,
+code VARCHAR(255) NULL,
+check_out_date timestamp,
+check_in_date timestamp,
+create_date DATE NULL,
+create_user VARCHAR(255) NULL,
+update_date DATE NULL,
+update_user VARCHAR(255) NULL,
+version INTEGER NOT NULL,
+book_id BIGINT NOT NULL REFERENCES book(id), 
+student_id BIGINT NOT NULL REFERENCES student(id));

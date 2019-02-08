@@ -8,7 +8,6 @@ import static org.springframework.data.jpa.domain.Specification.where;
 
 import java.net.URI;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
@@ -125,18 +124,23 @@ public class StudentService {
 	}
 
 	@POST
-	@Consumes("application/json") // MediaType.APPLICATION_JSON)
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
 	public Response createStudent(StudentView studentView, @Context HttpServletRequest request) {
 		Student student = studentAssembler.to(studentView);
 		try{
 			student = studentRepository.save(student);
 		} catch(DataAccessException e) {
-			return Response.status(Status.BAD_REQUEST).build();
+			String msg = e.getMostSpecificCause() != null ? e.getMostSpecificCause().getMessage() : e.getMessage();
+			if(e.getCause() instanceof org.hibernate.exception.ConstraintViolationException) {
+				return Response.status(Status.CONFLICT).entity(msg).build();
+			} else {
+				return Response.status(Status.BAD_REQUEST).entity(msg).build();
+			}
 		}
 		
 		StudentView savedStudent = studentAssembler.to(student);
-		URI uri = UriBuilder.fromUri(request.getRequestURL().toString()).path(String.valueOf(savedStudent.getId()))
-				.build();
+		URI uri = UriBuilder.fromUri(request.getRequestURL().toString()).path(String.valueOf(savedStudent.getId())).build();
 		return Response.created(uri).entity(savedStudent).build();
 		
 	}
