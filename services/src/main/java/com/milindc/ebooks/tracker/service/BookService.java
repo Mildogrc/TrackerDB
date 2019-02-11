@@ -63,11 +63,17 @@ public class BookService {
 	@Produces("application/json")
 	public Response createBook(BookView bookView, @Context HttpServletRequest request) {
 		Book book = bookAssembler.to(bookView);
-		book = saveBookByIsbn(book.getIsbn());
-		log.debug(String.format("Retrieved book %s", book));
-		BookView savedBook = bookAssembler.to(book);
-		URI uri = UriBuilder.fromUri(request.getRequestURL().toString()).path(String.valueOf(savedBook.getId())).build();
-		return Response.created(uri).entity(savedBook).build();
+		Book onhand = findByIsbn(book.getIsbn());
+		if (onhand == null) {
+			book = saveBookByIsbn(book.getIsbn());
+			log.debug(String.format("Retrieved book %s", book));
+			BookView savedBook = bookAssembler.to(book);
+			URI uri = UriBuilder.fromUri(request.getRequestURL().toString()).path(String.valueOf(savedBook.getId())).build();
+			return Response.created(uri).entity(savedBook).build();
+		} else {
+			return Response.status(HttpStatus.CONFLICT.value()).build();
+		}
+
 	}
 
 	public Book saveBookByIsbn(String isbn) {

@@ -56,31 +56,21 @@ first_publication_year INTEGER NOT NULL,
 last_publication_year INTEGER NULL
 ); 
 
-CREATE TABLE book_copy ( 
-id SERIAL  PRIMARY KEY, 
-create_date DATE NULL, 
-create_user VARCHAR(255) NULL, 
-enabled INTEGER NOT NULL, 
-update_date DATE NULL, 
-update_user VARCHAR(255) NULL, 
-version INTEGER NOT NULL, 
-price DOUBLE PRECISION NULL, 
-redemption_code VARCHAR(255) NULL, 
-book_id INTEGER NOT NULL REFERENCES book(id), 
-student_id INTEGER NOT NULL REFERENCES student(id),  
-CONSTRAINT ndx_bkcp_rdmp UNIQUE (redemption_code)
-); 
-
 
 CREATE TABLE checkout (
 id SERIAL NOT NULL,
-code VARCHAR(255) NULL,
+redemption_code VARCHAR(255) NOT NULL,
 check_out_date timestamp,
 check_in_date timestamp,
 create_date DATE NULL,
 create_user VARCHAR(255) NULL,
+enabled INTEGER NOT NULL,
 update_date DATE NULL,
 update_user VARCHAR(255) NULL,
 version INTEGER NOT NULL,
 book_id BIGINT NOT NULL REFERENCES book(id), 
-student_id BIGINT NOT NULL REFERENCES student(id));
+student_id BIGINT NOT NULL REFERENCES student(id),
+CONSTRAINT ndx_redmpt_code UNIQUE (redemption_code)
+);
+
+

@@ -1,0 +1,11 @@
+DROP  TABLE    checkout             ;
+DROP  TABLE    author               ;
+DROP  TABLE    book_copy            ;
+DROP  TABLE    book                 ;
+DROP  TABLE    flyway_schema_history;
+DROP  TABLE    student              ;
+DROP  SEQUENCE author_id_seq        ;
+DROP  SEQUENCE book_copy_id_seq     ;
+DROP  SEQUENCE book_id_seq          ;
+DROP  SEQUENCE checkout_id_seq      ;
+DROP  SEQUENCE student_id_seq       ;

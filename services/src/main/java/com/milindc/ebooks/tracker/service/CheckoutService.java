@@ -20,6 +20,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriBuilder;
 
+import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -30,13 +31,14 @@ import com.milindc.ebooks.tracker.db.model.Student;
 import com.milindc.ebooks.tracker.service.assembler.CheckoutAssembler;
 import com.milindc.ebooks.tracker.service.model.CheckoutView;
 import com.milindc.ebooks.tracker.service.model.Checkouts;
+import com.milindc.ebooks.tracker.service.model.StudentView;
 
-import lombok.extern.slf4j.Slf4j;
-
-@Path("/checkouts")
 @Component
-@Slf4j
+@Path("/checkouts")
 public class CheckoutService {
+	
+	private static final transient Logger log = org.slf4j.LoggerFactory.getLogger(CheckoutService.class);
+	
 	@Autowired
 	private CheckoutRepository checkoutRepository;
 	
@@ -46,7 +48,7 @@ public class CheckoutService {
 	@Autowired
 	private StudentService studentService;
 	
-	private CheckoutAssembler checkoutAssembler;
+	private CheckoutAssembler checkoutAssembler = new CheckoutAssembler();
 
 	@GET
 	@Path("${id}")
@@ -75,7 +77,7 @@ public class CheckoutService {
 		if(book != null) {
 			itr = checkoutRepository.findByBookId(book.getId());
 		} else {
-			Student student = studentService.getStudentByStudentId(studentId);
+			StudentView student = studentService.getStudentByStudentId(studentId);
 			if(student != null) {
 				itr = checkoutRepository.findByStudentId(student.getId());
 			}
@@ -107,7 +109,7 @@ public class CheckoutService {
 	}
 	
 	public List<Checkout> getCheckoutByStudent(String studentId) {
-		Student student = studentService.getStudentByStudentId(studentId);
+		Student student = studentService.findStudentByStudentId(studentId);
 		List<Checkout> checkouts = checkoutRepository.findByStudentId(student.getId());
 		return checkouts;
 	}
@@ -117,7 +119,7 @@ public class CheckoutService {
 		Checkout checkout = checkoutAssembler.to(checkoutView);
 		checkout.setRedemptionCode(UUID.randomUUID().toString());
 		checkout.setBook(bookService.findByIsbn(checkout.getBook().getIsbn()));
-		checkout.setStudent(studentService.getStudentByStudentId(checkout.getStudent().getStudentId()));
+		checkout.setStudent(studentService.findStudentByStudentId(checkout.getStudent().getStudentId()));
 		checkout = checkoutRepository.save(checkout);
 		log.debug(String.format("Retrieved checkout %s", checkout));
 		CheckoutView savedCheckout = checkoutAssembler.to(checkout);

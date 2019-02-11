@@ -21,6 +21,10 @@ spring:
         format_sql: true
   zipkin:
     baseUrl: http://localhost:9411/
+hibernate:
+  jdbc:
+    lob:
+      non_contextual_creation:true
 server:
   port: 8090
 logging:

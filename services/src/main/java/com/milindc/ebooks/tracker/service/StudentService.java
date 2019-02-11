@@ -105,9 +105,15 @@ public class StudentService {
 
 	@GET
 	@Path("/{studentId}")
-	public Student getStudentByStudentId(@PathParam("studentId") String studentId) {
+	public StudentView getStudentByStudentId(@PathParam("studentId") String studentId) {
+		System.out.println("Using Path Parameter Function for student ID");
+		Student student = findStudentByStudentId(studentId);
+		StudentView studentView = studentAssembler.to(student);
+		return studentView;
+	}
+
+	protected Student findStudentByStudentId(String studentId) {
 		Student student = studentRepository.findByStudentId(studentId);
-		System.out.println("Using Path Parameter Funtion for fisrtName");
 		return student;
 	}
 

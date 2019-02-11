@@ -16,8 +16,12 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "checkout")
 public class Checkout extends AuditedEntity {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -5493948961685085718L;
 
 	/**
 	 * This is usually given by the library
