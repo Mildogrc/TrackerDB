@@ -1,6 +1,7 @@
 package com.milindc.ebooks.tracker.service;
 
 import java.net.URI;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -51,7 +52,7 @@ public class CheckoutService {
 	private CheckoutAssembler checkoutAssembler = new CheckoutAssembler();
 
 	@GET
-	@Path("${id}")
+	@Path("/${id}")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response getCheckout(@PathParam("id") Long id) {
 		
@@ -95,6 +96,25 @@ public class CheckoutService {
 		return response;
 	}
 
+	
+	@POST
+	@Consumes("application/json")
+	public Response checkout(CheckoutView checkoutView, @Context HttpServletRequest request) {
+		System.out.format("Received %s", checkoutView);
+		Checkout checkout = checkoutAssembler.to(checkoutView);
+		checkout.setRedemptionCode(UUID.randomUUID().toString());
+		checkout.setBook(bookService.findByIsbn(checkout.getBook().getIsbn()));
+		checkout.setStudent(studentService.findStudentByStudentId(checkout.getStudent().getStudentId()));
+		if(checkout.getCheckOutDate() == null) checkout.setCheckOutDate(new Date());
+		checkout = checkoutRepository.save(checkout);
+		log.debug(String.format("Retrieved checkout %s", checkout));
+		CheckoutView savedCheckout = checkoutAssembler.to(checkout);
+		URI uri = UriBuilder.fromUri(request.getRequestURL().toString()).path(String.valueOf(savedCheckout.getRedemptionCode())).build();
+		return Response.created(uri).entity(savedCheckout).build();
+	}
+
+	
+
 	public List<Checkout> getCheckoutByIsbn(String isbn) {
 		Book book = bookService.findByIsbn(isbn);
 		List<Checkout> checkouts = checkoutRepository.findByBookId(book.getId());
@@ -113,18 +133,4 @@ public class CheckoutService {
 		List<Checkout> checkouts = checkoutRepository.findByStudentId(student.getId());
 		return checkouts;
 	}
-	@POST
-	@Consumes("application/json")//MediaType.APPLICATION_JSON)
-	public Response checkout(CheckoutView checkoutView, @Context HttpServletRequest request) {
-		Checkout checkout = checkoutAssembler.to(checkoutView);
-		checkout.setRedemptionCode(UUID.randomUUID().toString());
-		checkout.setBook(bookService.findByIsbn(checkout.getBook().getIsbn()));
-		checkout.setStudent(studentService.findStudentByStudentId(checkout.getStudent().getStudentId()));
-		checkout = checkoutRepository.save(checkout);
-		log.debug(String.format("Retrieved checkout %s", checkout));
-		CheckoutView savedCheckout = checkoutAssembler.to(checkout);
-		URI uri = UriBuilder.fromUri(request.getRequestURL().toString()).path(String.valueOf(savedCheckout.getRedemptionCode())).build();
-		return Response.created(uri).entity(savedCheckout).build();
-	}
-
 }

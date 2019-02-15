@@ -37,22 +37,17 @@ import com.milindc.ebooks.tracker.service.assembler.StudentAssembler;
 import com.milindc.ebooks.tracker.service.model.StudentView;
 import com.milindc.ebooks.tracker.service.model.Students;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 @Component
 @Path("/students")
 public class StudentService {
 	@Autowired
 	private StudentRepository studentRepository;
+
 	StudentAssembler studentAssembler = new StudentAssembler();
 
-	@GET
-	@Produces(MediaType.APPLICATION_JSON)
-	public Students getStudents() {
-		Students students = new Students();
-		Iterable<Student> itr = studentRepository.findAll();
-		students.setStudents(StreamSupport.stream(itr.spliterator(), false).map(b -> studentAssembler.to(b))
-				.collect(Collectors.toList()));
-		return students;
-	}
 
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
@@ -74,60 +69,27 @@ public class StudentService {
 
 		Students students = new Students();
 		List<Student> itr = studentRepository.findAll(where(singleSpec(predicates)));
-		itr.stream().forEach(s -> System.out.println(s.getFirstName()));
+		itr.stream().forEach(s -> log.debug(s.getFirstName()));
 		students.setStudents(itr.stream().map(s -> studentAssembler.to(s)).collect(Collectors.toList()));
-		System.out.println(students);
+		log.debug(String.valueOf(students));
 		return students;
 	}
 
-	@GET
-	@Path("/lastName/{lastName}")
-	public Students getStudentsByLastName(@PathParam("lastName") String lastName) {
-		Students students = new Students();
-		List<Student> itr = studentRepository.findByLastName(lastName);
-		students.setStudents(StreamSupport.stream(itr.spliterator(), false).map(s -> studentAssembler.to(s))
-				.collect(Collectors.toList()));
-		System.out.println("Using Path Parameter Funtion for lastName");
-		return students;
-	}
-
-	@GET
-	@Path("/firstName/{firstName}")
-	public Students getStudentsByFirstName(@PathParam("firstName") String firstName) {
-		Students students = new Students();
-		List<Student> itr = studentRepository.findByFirstName(firstName);
-
-		students.setStudents(StreamSupport.stream(itr.spliterator(), false).map(s -> studentAssembler.to(s))
-				.collect(Collectors.toList()));
-		System.out.println("Using Path Parameter Funtion for fisrtName");
-		return students;
-	}
 
 	@GET
 	@Path("/{studentId}")
 	public StudentView getStudentByStudentId(@PathParam("studentId") String studentId) {
-		System.out.println("Using Path Parameter Function for student ID");
+		log.debug("Using Path Parameter Function for student ID");
 		Student student = findStudentByStudentId(studentId);
 		StudentView studentView = studentAssembler.to(student);
 		return studentView;
 	}
 
-	protected Student findStudentByStudentId(String studentId) {
+	public Student findStudentByStudentId(String studentId) {
 		Student student = studentRepository.findByStudentId(studentId);
 		return student;
 	}
 
-	@GET
-	@Path("/phone/{phone}")
-	public Students getStudentsByPhoneNumber(@PathParam("phone") String phone) {
-		Students students = new Students();
-		List<Student> itr = studentRepository.findByPhone(phone);
-
-		students.setStudents(StreamSupport.stream(itr.spliterator(), false).map(s -> studentAssembler.to(s))
-				.collect(Collectors.toList()));
-		System.out.println("Using Path Parameter Funtion for phone");
-		return students;
-	}
 
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
@@ -137,7 +99,8 @@ public class StudentService {
 		try{
 			student = studentRepository.save(student);
 		} catch(DataAccessException e) {
-			String msg = e.getMostSpecificCause() != null ? e.getMostSpecificCause().getMessage() : e.getMessage();
+			String msg = String.format("{\"error\": \"%s\"}", e.getMostSpecificCause() != null ? e.getMostSpecificCause().getMessage() : e.getMessage());
+			log.debug(msg);
 			if(e.getCause() instanceof org.hibernate.exception.ConstraintViolationException) {
 				return Response.status(Status.CONFLICT).entity(msg).build();
 			} else {
@@ -151,16 +114,5 @@ public class StudentService {
 		
 	}
 
-//	@PUT
-//	@Consumes("application/json")
-//		public Response updateStudent(Student student, @Context HttpServletRequest request) {
-//		
-//	}		
 
-//	@DELETE
-//	@Consumes("application/json")
-//	public void deleteByLastName(@PathParam("lastName") Student lastName) {
-//		StudentService sS = new StudentService();
-//		sS.deleteByLastName(lastName);
-//	}
 }

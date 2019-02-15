@@ -1,7 +1,7 @@
 package com.milindc.ebooks.tracker;
 
-
 import javax.annotation.PostConstruct;
+import javax.ws.rs.core.Response;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
@@ -16,24 +16,27 @@ import com.milindc.ebooks.tracker.service.StudentService;
 @ComponentScan
 @EntityScan("com.milindc.ebooks.tracker.db.model")
 public class TrackerApplication {
-	
+
 	@Autowired
 	CheckoutService cs;
-	
+
 	@Autowired
 	StudentService ss;
-	
+
 	/*
-	 * BitBucketID URL
-	 * postgresql://root@Milinds-MBP:26257?sslmode=disable
+	 * BitBucketID URL postgresql://root@Milinds-MBP:26257?sslmode=disable
 	 */
 	public static void main(String[] args) {
 		SpringApplication.run(TrackerApplication.class, args);
 	}
-	
+
 	@PostConstruct
 	public void test() {
-		System.out.println(cs.getCheckout(1l));
+		Response rs = cs.getCheckout(1l);
+		System.out.println(rs.getEntity());
+		System.out.println(rs);
 		System.out.println(ss.getStudentByStudentId("123"));
+		
 	}
+
 }

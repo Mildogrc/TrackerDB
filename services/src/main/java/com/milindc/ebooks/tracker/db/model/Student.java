@@ -1,5 +1,6 @@
 package com.milindc.ebooks.tracker.db.model;
 
+import java.util.LinkedList;
 import java.util.List;
 
 import javax.persistence.CascadeType;
@@ -36,9 +37,13 @@ public class Student extends Person {
 	private Integer academicYear;
 
 	@OneToMany(mappedBy = "student", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-	private List<Checkout> borrowedBooks;
+	private List<Checkout> borrowedBooks = new LinkedList<Checkout>();
 	
 
+	public String toString() {
+		return String.format("studentId: %s, phone1: %s, phone2: %s age: %d, academicYear: %d", studentId, phone1, phone2, age, academicYear);
+	}
+	
 	public Student(String firstName, String lastName, String middleName, String email, String gender, String phone1, String phone2,
 			Integer age, Integer academicYear, List<Checkout> borrowedBooks, String studentID) {
 		super(firstName, lastName, middleName, email, gender);

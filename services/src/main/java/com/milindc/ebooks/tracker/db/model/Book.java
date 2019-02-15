@@ -35,6 +35,10 @@ public class Book extends AuditedEntity {
 	
 	private String genre;
 	
+	public String toString() {
+		return String.format("isbn: %s, title: %s, author: %s, publicationYear: %d, editor : %s, publisher: %s, genre: %s", isbn, title, author, publicationYear, editor, publisher, genre);
+	}
+	
 	@OneToMany(mappedBy = "book", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	private List<Checkout> copies = new ArrayList<>(); 
 	

@@ -35,7 +35,7 @@ public class StudentView {
 	private String fullName;
 
 	public String getFullName() {
-		return String.format("%s, %s %s", lastName, firstName, middleName);
+		return String.format("%s, %s %s", this.lastName==null?"":this.lastName , this.firstName==null?"":this.firstName, this.middleName==null?"":this.middleName);
 	}
 
 	public StudentView(String firstName, String lastName, String middleName, 
